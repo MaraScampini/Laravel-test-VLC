@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\TaskController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/user/{id}', function($id){
+
+    // $user = DB::table('users')->where('id', $id)->get();
+    // $user = User::where('id', $id)->get();
+
+    $user = User::find($id);
+    $userFirst = User::where('id', $id)->first();
+
+    return $user;
 });
+
+
+// CONTROLADORES DE TASKS
+
+Route::get('/tasks', [TaskController::class, 'getAllTasks']);
+Route::get('/tasks/{id}', [TaskController::class, 'getTasksByUser']);
+Route::get('/tasks/description/{description}', [TaskController::class, 'getTasksByDescription']);
+Route::post('/tasks', [TaskController::class, 'createTask']);
