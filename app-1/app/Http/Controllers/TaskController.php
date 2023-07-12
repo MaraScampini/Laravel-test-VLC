@@ -66,18 +66,58 @@ class TaskController extends Controller
     //     }
     // }
 
-    public function createTask(Request $request)
+    // public function createTask(Request $request)
+    // {
+
+    //     try {
+
+    //         $validator = Validator::make($request->all(), [
+    //             'description' => 'required|string',
+    //             'user_id' => 'required'
+    //         ], [
+    //             'description.required' => '¡Hace falta una descripción!',
+    //             'description.string' => 'La descripción debe contener un texto',
+    //             'user_id' => 'Hay un error con la clave de usuario'
+    //         ]);
+
+    //         if ($validator->fails()) {
+    //             return response()->json($validator->errors(), 400);
+    //         }
+
+    //         $validData = $validator->validated();
+
+    //         $task = Task::create([
+    //             'description' => $validData['description'],
+    //             'user_id' => $validData['user_id']
+    //         ]);
+
+    //         // DB::table('tasks')->insert(['description' => $request->input('description'), 'user_id'=>$request->input('user_id')]);
+
+    //         // $task = new Task;
+    //         // $task->description = $request->input('description');
+    //         // $task->user_id = $request->input('user_id');
+    //         // $task->save();
+
+    //         return response()->json([
+    //             'message' => 'Task created',
+    //             'data' => $task
+    //         ], Response::HTTP_CREATED);
+    //     } catch (\Throwable $th) {
+    //         Log::error('Error creating task ' . $th->getMessage());
+
+    //         return response()->json([
+    //             'message' => 'Error creating task'
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
+
+    public function updateTask(Request $request)
     {
-
         try {
-
             $validator = Validator::make($request->all(), [
-                'description' => 'required|string',
-                'user_id' => 'required'
-            ], [
-                'description.required' => '¡Hace falta una descripción!',
-                'description.string' => 'La descripción debe contener un texto',
-                'user_id' => 'Hay un error con la clave de usuario'
+                'description' => 'string',
+                'status' => 'boolean',
+                'id' => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -86,27 +126,56 @@ class TaskController extends Controller
 
             $validData = $validator->validated();
 
-            $task = Task::create([
-                'description' => $validData['description'],
-                'user_id' => $validData['user_id']
-            ]);
+            $task = Task::find($validData['id']);
 
-            // DB::table('tasks')->insert(['description' => $request->input('description'), 'user_id'=>$request->input('user_id')]);
+            if (!$task) {
+                return response()->json([
+                    'message' => 'Task not found'
+                ]);
+            }
 
-            // $task = new Task;
-            // $task->description = $request->input('description');
-            // $task->user_id = $request->input('user_id');
-            // $task->save();
+            if (isset($validData['description'])) {
+                $task->description = $validData['description'];
+            }
+
+            if (isset($validData['status'])) {
+                $task->status = $validData['status'];
+            }
+
+            $task->save();
 
             return response()->json([
-                'message' => 'Task created',
-                'data' => $task
-            ], Response::HTTP_CREATED);
+                'message' => 'Task updated'
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            Log::error('Error creating task ' . $th->getMessage());
+            Log::error('Error updating task ' . $th->getMessage());
 
             return response()->json([
-                'message' => 'Error creating task'
+                'message' => 'Error updating task'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function deleteTask($id)
+    {
+        try {
+
+            $user = auth()->user();
+            $task = Task::where('user_id', $user->id)->find($id);
+            // // ME REQUIERE ENCONTRAR PRIMERO LA TAREA
+            $task->delete();
+
+            // NO REQUIERE ENCONTRAR TAREA
+            // Task::destroy($id);
+
+            return response()->json([
+                'message' => 'Task deleted'
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error('Error deleting task ' . $th->getMessage());
+
+            return response()->json([
+                'message' => 'Error deleting task'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

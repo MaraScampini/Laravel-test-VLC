@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
@@ -21,18 +23,18 @@ class AuthController extends Controller
                 'password' => ['required', Password::min(8)->mixedCase()->numbers()]
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
             }
 
             $validData = $validator->validated();
 
             $newUser = User::create([
-                'name'=>$validData['name'],
-                'surname'=>$validData['surname'],
-                'email'=>$validData['email'],
-                'password'=>bcrypt($validData['password']),
-                'role_id'=>2
+                'name' => $validData['name'],
+                'surname' => $validData['surname'],
+                'email' => $validData['email'],
+                'password' => bcrypt($validData['password']),
+                'role_id' => 2
             ]);
 
             $token = $newUser->createToken('apiToken')->plainTextToken;
@@ -42,7 +44,6 @@ class AuthController extends Controller
                 'data' => $newUser,
                 'token' => $token
             ], Response::HTTP_CREATED);
-
         } catch (\Throwable $th) {
             Log::error('Error registering user ' . $th->getMessage());
 
@@ -52,17 +53,18 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required'
             ], [
-                'email'=> 'Email or password are invalid',
+                'email' => 'Email or password are invalid',
                 'password' => 'Email or password are invalid'
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
             }
 
@@ -70,13 +72,13 @@ class AuthController extends Controller
 
             $user = User::where('email', $validData['email'])->first();
 
-            if(!$user){
+            if (!$user) {
                 return response()->json([
                     'message' => 'Email or password are invalid'
                 ], Response::HTTP_FORBIDDEN);
             }
 
-            if(!Hash::check($validData['password'], $user->password)){
+            if (!Hash::check($validData['password'], $user->password)) {
                 return response()->json([
                     'message' => 'Email or password are invalid'
                 ], Response::HTTP_FORBIDDEN);
@@ -89,7 +91,6 @@ class AuthController extends Controller
                 'data' => $user,
                 'token' => $token
             ], Response::HTTP_CREATED);
-
         } catch (\Throwable $th) {
             Log::error('Error logging user in ' . $th->getMessage());
 
@@ -99,11 +100,12 @@ class AuthController extends Controller
         }
     }
 
-    public function profile(){
+    public function profile()
+    {
         try {
             $user = auth()->user();
 
-            
+
             return response()->json([
                 'message' => 'User found',
                 'data' => $user,
@@ -113,6 +115,26 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'Error retrieving user'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+
+        try {
+            $headerToken = $request->bearerToken();
+            $token = PersonalAccessToken::findToken($headerToken);
+            $token->delete();
+
+            return response()->json([
+                'message' => 'User logged out'
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error('Error logging user out ' . $th->getMessage());
+
+            return response()->json([
+                'message' => 'Error logging user out'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

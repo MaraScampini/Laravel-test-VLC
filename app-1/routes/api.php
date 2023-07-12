@@ -6,6 +6,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskController\CreateTask;
 use App\Http\Controllers\TaskController\GetTaskByUser;
 use App\Http\Controllers\TaskController\getTasksByDescription;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,9 +41,16 @@ Route::get('/user/{id}', function($id){
 Route::get('/tasks/{id}', GetTaskByUser::class);
 Route::get('/tasks/description/{description}', getTasksByDescription::class);
 Route::post('/tasks', CreateTask::class);
+Route::put('/tasks', [TaskController::class, 'updateTask']);
+Route::delete('/tasks', [TaskController::class, 'deleteTask'])->middleware('auth:sanctum');
 
 // CONTROLADORES DE AUTENTICACIÓN
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:sanctum');
+
+// CONTROLADORES DE USUARIO
+
+Route::delete('/user/delete', [UserController::class, 'deleteMyAccount'])->middleware('auth:sanctum');
+Route::post('/user/{id}', [UserController::class, 'restoreAccount']);
