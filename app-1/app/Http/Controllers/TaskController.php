@@ -12,59 +12,59 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TaskController extends Controller
 {
-    public function getAllTasks()
-    {
-        try {
-            $tasks = Task::with('user')->get();
+    // public function getAllTasks()
+    // {
+    //     try {
+    //         $tasks = Task::with('user')->get();
 
-            return response()->json([
-                'message' => 'Tasks retrieved',
-                'data' => $tasks
-            ], Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            Log::error('Error getting tasks ' . $th->getMessage());
+    //         return response()->json([
+    //             'message' => 'Tasks retrieved',
+    //             'data' => $tasks
+    //         ], Response::HTTP_OK);
+    //     } catch (\Throwable $th) {
+    //         Log::error('Error getting tasks ' . $th->getMessage());
 
-            return response()->json([
-                'message' => 'Error retrieving tasks'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    //         return response()->json([
+    //             'message' => 'Error retrieving tasks'
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
-    public function getTasksByUser($id)
-    {
-        try {
-            $tasks = Task::where('user_id', $id)->get();
+    // public function getTasksByUser($id)
+    // {
+    //     try {
+    //         $tasks = Task::where('user_id', $id)->get();
 
-            return response()->json([
-                'message' => 'Tasks retrieved',
-                'data' => $tasks
-            ], Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            Log::error('Error getting tasks ' . $th->getMessage());
+    //         return response()->json([
+    //             'message' => 'Tasks retrieved',
+    //             'data' => $tasks
+    //         ], Response::HTTP_OK);
+    //     } catch (\Throwable $th) {
+    //         Log::error('Error getting tasks ' . $th->getMessage());
 
-            return response()->json([
-                'message' => 'Error retrieving tasks'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    //         return response()->json([
+    //             'message' => 'Error retrieving tasks'
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
-    public function getTasksByDescription($description)
-    {
-        try {
-            $tasks = Task::where('description', 'like', '%' . $description . '%')->get();
+    // public function getTasksByDescription($description)
+    // {
+    //     try {
+    //         $tasks = Task::where('description', 'like', '%' . $description . '%')->get();
 
-            return response()->json([
-                'message' => 'Tasks retrieved',
-                'data' => $tasks
-            ], Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            Log::error('Error getting tasks ' . $th->getMessage());
+    //         return response()->json([
+    //             'message' => 'Tasks retrieved',
+    //             'data' => $tasks
+    //         ], Response::HTTP_OK);
+    //     } catch (\Throwable $th) {
+    //         Log::error('Error getting tasks ' . $th->getMessage());
 
-            return response()->json([
-                'message' => 'Error retrieving tasks'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    //         return response()->json([
+    //             'message' => 'Error retrieving tasks'
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     public function createTask(Request $request)
     {
