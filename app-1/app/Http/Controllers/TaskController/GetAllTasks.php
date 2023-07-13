@@ -13,7 +13,7 @@ class GetAllTasks extends Controller
     public function __invoke()
     {
         try {
-            $tasks = Task::with('user')->get();
+            $tasks = Task::with('user:id,name,surname')->get();
     
             return response()->json([
                 'message' => 'Tasks retrieved',

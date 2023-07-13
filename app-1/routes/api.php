@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MultitaskController;
 use App\Http\Controllers\TaskController\GetAllTasks;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskController\CreateTask;
@@ -48,9 +49,15 @@ Route::delete('/tasks', [TaskController::class, 'deleteTask'])->middleware('auth
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:sanctum');
+Route::get('/profile', [AuthController::class, 'profile'])->middleware(['auth:sanctum', 'isAdmin']);
 
 // CONTROLADORES DE USUARIO
 
 Route::delete('/user/delete', [UserController::class, 'deleteMyAccount'])->middleware('auth:sanctum');
 Route::post('/user/{id}', [UserController::class, 'restoreAccount']);
+
+// MULTITASK CONTROLLERS
+
+Route::post('/multitask', [MultitaskController::class, 'createMultitask'])->middleware('auth:sanctum');
+Route::post('/multitask/join', [MultitaskController::class, 'joinMultitask'])->middleware('auth:sanctum');
+Route::post('/multitask/leave', [MultitaskController::class, 'leaveMultitask'])->middleware('auth:sanctum');
