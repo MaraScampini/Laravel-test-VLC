@@ -61,3 +61,4 @@ Route::post('/user/{id}', [UserController::class, 'restoreAccount']);
 Route::post('/multitask', [MultitaskController::class, 'createMultitask'])->middleware('auth:sanctum');
 Route::post('/multitask/join', [MultitaskController::class, 'joinMultitask'])->middleware('auth:sanctum');
 Route::post('/multitask/leave', [MultitaskController::class, 'leaveMultitask'])->middleware('auth:sanctum');
+Route::get('/multitask', [MultitaskController::class, 'getMultis']);

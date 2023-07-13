@@ -116,9 +116,10 @@ class TaskController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'description' => 'string',
-                'status' => 'boolean',
-                'id' => 'required'
+
             ]);
+
+            $group_role = 2;
 
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
@@ -134,15 +135,17 @@ class TaskController extends Controller
                 ]);
             }
 
-            if (isset($validData['description'])) {
-                $task->description = $validData['description'];
-            }
+            $task->update(['role_id'=>$group_role]);
 
-            if (isset($validData['status'])) {
-                $task->status = $validData['status'];
-            }
+            // if (isset($validData['description'])) {
+            //     $task->description = $validData['description'];
+            // }
 
-            $task->save();
+            // if (isset($validData['status'])) {
+            //     $task->status = $validData['status'];
+            // }
+
+            // $task->save();
 
             return response()->json([
                 'message' => 'Task updated'

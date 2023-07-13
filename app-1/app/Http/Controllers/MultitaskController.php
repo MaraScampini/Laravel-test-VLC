@@ -119,4 +119,10 @@ class MultitaskController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getMultis(){
+        $multitasks = Multitask::with('user')->get();
+
+        return $multitasks;
+    }
 }
