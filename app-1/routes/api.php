@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\DB;
 */
 
 Route::get('/', function(){
-    return "Welcome"
+    return "Welcome";
 });
 
 Route::get('/user/{id}', function($id){
