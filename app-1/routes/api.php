@@ -24,6 +24,10 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+Route::get('/', function(){
+    return "Welcome"
+});
+
 Route::get('/user/{id}', function($id){
 
     // $user = DB::table('users')->where('id', $id)->get();
