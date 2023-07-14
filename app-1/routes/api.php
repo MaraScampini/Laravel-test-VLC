@@ -24,11 +24,11 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('/', function(){
+Route::get('/', function () {
     return "Welcome";
 });
 
-Route::get('/user/{id}', function($id){
+Route::get('/user/{id}', function ($id) {
 
     // $user = DB::table('users')->where('id', $id)->get();
     // $user = User::where('id', $id)->get();
@@ -39,10 +39,16 @@ Route::get('/user/{id}', function($id){
     return $user;
 });
 
+Route::get('/users', function (){
+    $users = DB::table('users')->get();
+
+    return $users;
+});
+
 
 // CONTROLADORES DE TASKS
 
- Route::get('/tasks', GetAllTasks::class);
+Route::get('/tasks', GetAllTasks::class);
 Route::get('/tasks/{id}', GetTaskByUser::class);
 Route::get('/tasks/description/{description}', getTasksByDescription::class);
 Route::post('/tasks', CreateTask::class);
